@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="YSMM.ModManager.HomePage">
+
+	<Border Padding="30">
+		<ScrollViewer>
+			
+			<StackPanel Spacing="16">
+
+				<!-- Header -->
+				<TextBlock Classes="header" Text="Welcome to the unofficial Yandere Simulator Mod Manager."/>
+
+				<!-- Disclaimer prompt -->
+				<TextBlock Classes="text" Text="Before you can use this tool, you must read the disclaimer below:"/>
+
+				<!-- Disclaimer body -->
+				<StackPanel Spacing="8">
+					<TextBlock Classes="boldText" Text="All mods made for this game are subject to lose support with every game update."/>
+					<TextBlock Classes="boldText" Text="The developers of these mods are under no obligation to keep these mods updated."/>
+					<TextBlock Classes="boldText" Text="You are not entitled to mods — they are made for your enjoyment."/>
+					<TextBlock Classes="boldText" Text="You should appreciate that people take time out of their day to make something for you to enjoy without receiving any compensation."/>
+				</StackPanel>
+
+				<!-- Confirmation -->
+				<TextBlock Classes="text" Text="Do you agree to these terms? (If you decline, you cannot use this tool.)"/>
+
+				<!-- Button group -->
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+					<Button Classes="button" Width="100" Content="Yes" Click="OnAgree"/>
+					<Button Classes="button" Width="100" Content="No" Click="OnDisagree"/>
+				</StackPanel>
+
+				<!-- Confirmation/Agree Text -->
+				<TextBlock x:Name="ConfirmationText"
+						   Text="The rest of the tabs should now be unlocked."
+						   FontSize="16"
+						   Foreground="LightGreen"
+						   HorizontalAlignment="Center"
+						   IsVisible="False"/>
+				
+			</StackPanel>
+		</ScrollViewer>
+	</Border>
+</UserControl>

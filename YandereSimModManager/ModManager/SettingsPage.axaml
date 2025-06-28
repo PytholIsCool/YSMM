@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:custom="clr-namespace:YSMM.Objects"
+             x:Class="YSMM.ModManager.SettingsPage"
+             Height="600">
+
+	<Border Padding="30">
+		<Grid RowDefinitions="*,Auto">
+			<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
+
+				<!-- Header -->
+				<TextBlock Classes="header" Text="Settings" Grid.Row="0"/>
+
+				<!-- Game Path -->
+				<Grid RowSpacing="8" Grid.Row="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Classes="text" Text="Yandere Simulator Game Path:" TextAlignment="Left" Grid.Row="0"/>
+					<Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="14">
+						<custom:LabelBox x:Name="GamePath" AllowNewLines="False" DisplayText="Game path goes here..." HorizontalAlignment="Stretch" Focusable="true" Grid.Column="0"/>
+						<Button Classes="button" Content="..." Click="OnSetPath" Grid.Column="1"/>
+						<Button Classes="button" Content="Clear" Click="OnClearPath" Grid.Column="2"/>
+						<Button Classes="button" Content="Open" Click="OnOpenPath" Grid.Column="3"/>
+					</Grid>
+				</Grid>
+
+				<!-- Personalization -->
+				<Grid Grid.Row="2" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+					<TextBlock Classes="text" Text="Personalization:" TextAlignment="Left" Grid.Row="0"/>
+
+					<!-- Theming -->
+					<Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" HorizontalAlignment="Center" ColumnSpacing="14">
+						<!-- Primary -->
+						<StackPanel Orientation="Vertical" Spacing="2.5" Grid.Column="0">
+							<TextBlock Classes="text" FontSize="15" Text="Primary:"/>
+							<custom:LabelBox x:Name="PrimaryHex" AllowNewLines="False" DisplayText="#XXXXXX" Width="65" CharacterLimit="7"/>
+						</StackPanel>
+						<!-- Secondary -->
+						<StackPanel Orientation="Vertical" Spacing="2.5" Grid.Column="1">
+							<TextBlock Classes="text" FontSize="15" Text="Secondary:"/>
+							<custom:LabelBox x:Name="SecondaryHex" AllowNewLines="False" DisplayText="#XXXXXX" Width="65" CharacterLimit="7"/>
+						</StackPanel>
+						<!-- BG -->
+						<StackPanel Orientation="Vertical" Spacing="2.5" Grid.Column="2">
+							<TextBlock Classes="text" FontSize="15" Text="BG:"/>
+							<custom:LabelBox x:Name="BackgroundHex" AllowNewLines="False" DisplayText="#XXXXXX" Width="65" CharacterLimit="7"/>
+						</StackPanel>
+						<!-- Alt BG -->
+						<StackPanel Orientation="Vertical" Spacing="2.5" Grid.Column="3">
+							<TextBlock Classes="text" FontSize="15" Text="Alt BG:"/>
+							<custom:LabelBox x:Name="BackgroundAltHex" AllowNewLines="False" DisplayText="#XXXXXX" Width="65" CharacterLimit="7"/>
+						</StackPanel>
+						<!-- Hover -->
+						<StackPanel Orientation="Vertical" Spacing="2.5" Grid.Column="4">
+							<TextBlock Classes="text" FontSize="15" Text="Hover:"/>
+							<custom:LabelBox x:Name="HoverHex" AllowNewLines="False" DisplayText="#XXXXXX" Width="65" CharacterLimit="7"/>
+						</StackPanel>
+						<!-- Click -->
+						<StackPanel Orientation="Vertical" Spacing="2.5" Grid.Column="5">
+							<TextBlock Classes="text" FontSize="15" Text="Click:"/>
+							<custom:LabelBox x:Name="ClickedHex" AllowNewLines="False" DisplayText="#XXXXXX" Width="65" CharacterLimit="7"/>
+						</StackPanel>
+					</Grid>
+					<Grid Grid.Row="4" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="14" HorizontalAlignment="Center">
+						<Button Classes="button" Content="Reset To Default Theme" Grid.Column="0" Click="OnResetTheme"/>
+						<Button Classes="button" Content="Apply Theme" Grid.Column="1" Click="OnApplyTheme"/>
+						<Button Classes="button" Content="Import" Grid.Column="2" Click="OnImportTheme"/>
+						<Button Classes="button" Content="Export" Grid.Column="3" Click="OnExportTheme"/>
+						<custom:LabelBox x:Name="ThemeName" AllowNewLines="False" DisplayText="Theme Name" Grid.Column="4" Width="150"/>
+					</Grid>
+				</Grid>
+
+				<!-- Export Path -->
+				<Grid Grid.Row="3" RowDefinitions="Auto,Auto" RowSpacing="8">
+					<custom:LabelBox x:Name="ExportsPath" AllowNewLines="False" HorizontalAlignment="Stretch" Focusable="true" DisplayText="Export path goes here..." Grid.Row="0"/>
+					<Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="14">
+						<Button Classes="button" Content="..." Click="OnSetExportsPath" Grid.Column="0"/>
+						<Button Classes="button" Content="Clear" Click="OnClearExportsPath" Grid.Column="1"/>
+						<Button Classes="button" Content="Open" Click="OnOpenExportsPath" Grid.Column="2"/>
+					</Grid>
+				</Grid>
+
+				<!-- Diagnostics -->
+				<Grid Grid.Row="4" RowDefinitions="Auto,Auto" RowSpacing="8">
+					<TextBlock Classes="text" Text="Diagnostics:" TextAlignment="Left" Grid.Row="0"/>
+					<Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="14" HorizontalAlignment="Left">
+						<Button Classes="button" Content="Open Local Appdata" Click="OnOpenLocalFolder" Grid.Column="0"/>
+						<Button Classes="button" Content="Open Installation Folder" Click="OnOpenInstallFolder" Grid.Column="1"/>
+						<Button Classes="button" Content="Open Config Folder" Click="OnOpenConfigFolder" Grid.Column="2"/>
+					</Grid>
+				</Grid>
+			</Grid>
+			
+			<Button Classes="button" Grid.Row="1" Content="Edit Repositories" HorizontalAlignment="Right" Click="OnOpenRepos"/>
+		</Grid>
+	</Border>
+</UserControl>

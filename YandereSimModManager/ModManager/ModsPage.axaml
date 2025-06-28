@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:custom="clr-namespace:YSMM.Objects"
+             x:Class="YSMM.ModManager.ModsPage">
+
+	<Border Padding="30">
+		<ScrollViewer>
+			
+			<StackPanel Spacing="16">
+				<!-- Header -->
+				<TextBlock Classes="header" Text="Mods"/>
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Classes="text" Text="Page:"/>
+					<TextBlock x:Name="PageNumberDisplay" Classes="text" Text="0"/>
+				</StackPanel>
+				
+				<!-- Loading Indicator -->
+				<StackPanel>
+					<TextBlock x:Name="LoadingIndicator" Classes="header"/>
+				</StackPanel>
+				
+				<!-- Mod List -->
+				<StackPanel Spacing="4">
+					
+					<StackPanel x:Name="ModListContainer"/>
+
+					<Grid ColumnDefinitions="Auto, *">
+						<StackPanel Orientation="Horizontal" Spacing="14" Grid.Column="0">
+							<Button Classes="button" Content="&lt;" Click="OnPrevPage"/>
+							<Button Classes="button" Content="Refresh" Click="OnRefresh"/>
+							<Button Classes="button" Content="&gt;" Click="OnNextPage"/>
+						</StackPanel>
+
+						<Button Classes="button" Content="Download" HorizontalAlignment="Right" Grid.Column="1" Click="OnDownload"/>
+					</Grid>
+					
+				</StackPanel>
+				
+			</StackPanel>
+			
+		</ScrollViewer>
+	</Border>
+</UserControl>

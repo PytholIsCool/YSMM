@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:custom="clr-namespace:YSMM.Objects"
+        x:Class="YSMM.MainWindow"
+		Width="1100" MinWidth="750" MaxWidth="1300"
+		Height="600" MinHeight="600" MaxHeight="600"
+		CanResize="True"
+        Title="YSMM - Yandere Simulator Mod Manager">
+
+	<!-- Sidebar style (inline, one-off use) -->
+	<Window.Styles>
+		<Style Selector="Button.sidebar">
+			<Setter Property="Foreground" Value="{DynamicResource BrushPrimary}" />
+			<Setter Property="FontSize" Value="14" />
+			<Setter Property="Padding" Value="8" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="Left" />
+			<Setter Property="BorderBrush" Value="{DynamicResource BrushSecondary}" />
+			<Setter Property="BorderThickness" Value="0 0 0 1" />
+			<Setter Property="Cursor" Value="Hand" />
+		</Style>
+	</Window.Styles>
+
+	<DockPanel>
+
+		<custom:SidePanel DockPanel.Dock="Left">
+			<StackPanel>
+				<TextBlock Text="YSMM" FontSize="18" Foreground="{DynamicResource BrushPrimary}" Margin="0 0 0 16" />
+				<Button Classes="sidebar" Content="Home" Margin="0 0 0 8" Click="OnHomeClick" />
+				<Button Classes="sidebar" Content="Mods" Margin="0 0 0 8" Click="OnModsClick" />
+				<Button Classes="sidebar" Content="Settings" Margin="0 0 0 8" Click="OnSettingsClick" />
+				<Button Classes="sidebar" Content="About" Margin="0 0 0 8" Click="OnAboutClick" />
+			</StackPanel>
+		</custom:SidePanel>
+
+		<Grid>
+			<custom:ContentPanel>
+				<!-- No content should be placed here directly. That'll be handled through pages. -->
+			</custom:ContentPanel>
+		</Grid>
+
+	</DockPanel>
+
+</Window>

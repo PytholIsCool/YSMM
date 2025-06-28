@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="YSMM.ModManager.AboutPage">
+
+	<Border Padding="30">
+		<ScrollViewer>
+
+			<StackPanel Spacing="16">
+
+				<!-- Header -->
+				<TextBlock Classes="header" Text="About"/>
+
+				<!-- Credits & Github Link -->
+				<TextBlock Classes="text" Text="This Mod Manager was made by Pythol, the creator of the Yandere Simulator Modding Group, YanAPI and more."/>
+				<TextBlock Classes="text" Text="If you're a developer looking for a base to make their own mod manager, the link to the repo for this one is listed below:"/>
+				<TextBlock Classes="link" x:Name="GithubLink" HorizontalAlignment="Center" Text="https://github.com" PointerPressed="OnGithubClicked"/>
+
+				<!-- Other Socials -->
+				<TextBlock Classes="text" Text="If you'd like to know more or want to interact with us directly, come visit our socials!"/>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+					<TextBlock Classes="link" Text="YSMG Discord"/>
+					<TextBlock Classes="link" Text="YSMG Youtube"/>
+				</StackPanel>
+				
+			</StackPanel>
+		</ScrollViewer>
+	</Border>
+</UserControl>

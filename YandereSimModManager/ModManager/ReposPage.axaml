@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:custom="clr-namespace:YSMM.Objects"
+             x:Class="YSMM.ModManager.ReposPage"
+             Height="600">
+
+	<Border Padding="30">
+		<Grid RowDefinitions="*,Auto">
+
+			<!-- Repos -->
+			<StackPanel Grid.Row="0" Spacing="4">
+				<TextBlock Classes="header" Text="Repositories"/>
+
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Classes="text" Text="Page:"/>
+					<TextBlock x:Name="PageNumberDisplay" Classes="text" Text="0"/>
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" Spacing="14">
+					<custom:LabelBox x:Name="RepoNameBox" AllowNewLines="False" DisplayText="Repo Name"/>
+					<custom:LabelBox x:Name="RepoUrlBox" AllowNewLines="False" DisplayText="Github Link"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Spacing="14">
+					<Button Classes="button" Content="Add" Click="OnAddRepo"/>
+					<Button Classes="button" Content="Clear" Click="OnClearRepo"/>
+				</StackPanel>
+				
+				<custom:ListControl x:Name="ModRepos" Margin="2.5"/>
+				<StackPanel Orientation="Horizontal">
+					<Button Classes="button" Content="&lt;" Click="OnPrevPage"/>
+					<Button Margin="2.5" HorizontalAlignment="Left" Classes="button" Content="Clear List" Click="OnClearRepoList"/>
+					<Button Classes="button" Content="&gt;" Click="OnNextPage"/>
+				</StackPanel>
+			</StackPanel>
+
+			<Button Grid.Row="1" Classes="button" Content="Settings" HorizontalAlignment="Right" Click="OnOpenSettings" Margin="0 10 0 0"/>
+		</Grid>
+	</Border>
+</UserControl>

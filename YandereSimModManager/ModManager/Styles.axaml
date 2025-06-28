@@ -1,0 +1,91 @@
+<Styles xmlns="https://github.com/avaloniaui">
+
+	<!-- Button -->
+	<Style Selector="Button.button">
+		<Setter Property="Background" Value="{DynamicResource BrushBackground}"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushPrimary}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushSecondary}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Padding" Value="8 4"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="Button.button:pointerover">
+		<Setter Property="Background" Value="{DynamicResource BrushHover}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushPrimary}"/>
+	</Style>
+
+	<Style Selector="Button.button:pressed">
+		<Setter Property="Background" Value="{DynamicResource BrushPressed}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushSecondary}"/>
+	</Style>
+
+	<!-- Checkbox -->
+	<Style Selector="CheckBox.checkbox">
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushPrimary}"/>
+		<Setter Property="Background" Value="{DynamicResource BrushBackground}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushSecondary}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Padding" Value="6 2"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="CheckBox.checkbox:pointerover">
+		<Setter Property="Background" Value="{DynamicResource BrushHover}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushPrimary}"/>
+	</Style>
+
+	<Style Selector="CheckBox.checkbox:pressed">
+		<Setter Property="Background" Value="{DynamicResource BrushPressed}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushSecondary}"/>
+	</Style>
+
+	<!-- Header -->
+	<Style Selector="TextBlock.header">
+		<Setter Property="FontSize" Value="28"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushPrimary}"/>
+		<Setter Property="TextAlignment" Value="Center"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+
+	<!-- Text -->
+	<Style Selector="TextBlock.text">
+		<Setter Property="FontSize" Value="20"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushPrimary}"/>
+		<Setter Property="TextAlignment" Value="Center"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+
+	<!-- Link -->
+	<Style Selector="TextBlock.link">
+		<Setter Property="Foreground" Value="#4AA8FF"/>
+		<Setter Property="TextDecorations" Value="Underline"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="FontSize" Value="18"/>
+	</Style>
+
+	<Style Selector="TextBlock.link:pointerover">
+		<Setter Property="Foreground" Value="#82CFFF"/>
+	</Style>
+
+	<Style Selector="TextBlock.link:pressed">
+		<Setter Property="Foreground" Value="#2D8BE0"/>
+	</Style>
+
+	<!-- Bold Text -->
+	<Style Selector="TextBlock.boldText">
+		<Setter Property="FontSize" Value="18"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushPrimary}"/>
+		<Setter Property="TextAlignment" Value="Center"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+
+</Styles>

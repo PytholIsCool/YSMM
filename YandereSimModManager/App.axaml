@@ -1,0 +1,33 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="YSMM.App">
+
+	<Application.Styles>
+		<StyleInclude Source="avares://YandereSimModManager/ModManager/Styles.axaml"/>
+	</Application.Styles>
+
+	<Application.Resources>
+		<!-- Simplified Color Scheme -->
+		<Color x:Key="ColorPrimary">#FFFFFF</Color>
+		<!-- Main text -->
+		<Color x:Key="ColorSecondary">#888888</Color>
+		<!-- Borders, subtle text -->
+		<Color x:Key="ColorBackground">#1e1e2f</Color>
+		<!-- Primary background -->
+		<Color x:Key="ColorAltBackground">#2c2c3e</Color>
+		<!-- Side panel / alt bg -->
+		<Color x:Key="ColorHover">#333333</Color>
+		<!-- Hover state -->
+		<Color x:Key="ColorPressed">#222222</Color>
+		<!-- Pressed state -->
+
+		<!-- Corresponding Brushes -->
+		<SolidColorBrush x:Key="BrushPrimary" Color="{StaticResource ColorPrimary}" />
+		<SolidColorBrush x:Key="BrushSecondary" Color="{StaticResource ColorSecondary}" />
+		<SolidColorBrush x:Key="BrushBackground" Color="{StaticResource ColorBackground}" />
+		<SolidColorBrush x:Key="BrushAltBackground" Color="{StaticResource ColorAltBackground}" />
+		<SolidColorBrush x:Key="BrushHover" Color="{StaticResource ColorHover}" />
+		<SolidColorBrush x:Key="BrushPressed" Color="{StaticResource ColorPressed}" />
+	</Application.Resources>
+
+</Application>
