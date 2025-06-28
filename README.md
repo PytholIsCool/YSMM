@@ -14,3 +14,6 @@ This software offers:
 
 - Custom themes to personalize your manager
 - No paywall for fast downloads; Everything is limited by your own internet!
+- And more!
+
+Enjoy :)
