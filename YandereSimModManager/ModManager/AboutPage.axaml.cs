@@ -11,7 +11,7 @@ public partial class AboutPage : ContentPage {
         InitializeComponent();
     }
 
-    private void OnGithubClicked(object? sender, RoutedEventArgs e) => WebUtils.OpenURL(GithubLink.Text);
+    private void OnGithubClicked(object? sender, RoutedEventArgs e) => WebUtils.OpenURL(@"https://github.com/PytholIsCool/YSMM");
     private void OnDiscordClicked(object? sender, RoutedEventArgs e) => WebUtils.OpenURL(@"https://discord.gg/bmwJ74rRNV");
     private void OnYoutubeClicked(object? sender, RoutedEventArgs e) => WebUtils.OpenURL("");
 }

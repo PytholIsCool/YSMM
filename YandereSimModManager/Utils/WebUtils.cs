@@ -3,10 +3,9 @@
 namespace YSMM.Utils; 
 internal static class WebUtils {
     internal static void OpenURL(string? url) {
-        if (!IsValidURL(url))
-            return;
-
         try {
+            if (!IsValidURL(url))
+                return;
             using var process = new System.Diagnostics.Process {
                 StartInfo = new System.Diagnostics.ProcessStartInfo {
                     FileName = url,

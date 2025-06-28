@@ -24,12 +24,20 @@
 	<DockPanel>
 
 		<custom:SidePanel DockPanel.Dock="Left">
-			<StackPanel>
+			<StackPanel HorizontalAlignment="Stretch">
 				<TextBlock Text="YSMM" FontSize="18" Foreground="{DynamicResource BrushPrimary}" Margin="0 0 0 16" />
-				<Button Classes="sidebar" Content="Home" Margin="0 0 0 8" Click="OnHomeClick" />
-				<Button Classes="sidebar" Content="Mods" Margin="0 0 0 8" Click="OnModsClick" />
-				<Button Classes="sidebar" Content="Settings" Margin="0 0 0 8" Click="OnSettingsClick" />
-				<Button Classes="sidebar" Content="About" Margin="0 0 0 8" Click="OnAboutClick" />
+
+				<Button Classes="sidebar" Content="Home" Margin="0 0 0 8"
+						Height="40" HorizontalAlignment="Stretch" Click="OnHomeClick" />
+
+				<Button Classes="sidebar" Content="Mods" Margin="0 0 0 8"
+						Height="40" HorizontalAlignment="Stretch" Click="OnModsClick" />
+
+				<Button Classes="sidebar" Content="Settings" Margin="0 0 0 8"
+						Height="40" HorizontalAlignment="Stretch" Click="OnSettingsClick" />
+
+				<Button Classes="sidebar" Content="About" Margin="0 0 0 8"
+						Height="40" HorizontalAlignment="Stretch" Click="OnAboutClick" />
 			</StackPanel>
 		</custom:SidePanel>
 

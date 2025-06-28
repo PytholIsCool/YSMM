@@ -31,7 +31,7 @@
 							<Button Classes="button" Content="&gt;" Click="OnNextPage"/>
 						</StackPanel>
 
-						<Button Classes="button" Content="Download" HorizontalAlignment="Right" Grid.Column="1" Click="OnDownload"/>
+						<Button Classes="button" Content="Download/Update" HorizontalAlignment="Right" Grid.Column="1" Click="OnDownload"/>
 					</Grid>
 					
 				</StackPanel>

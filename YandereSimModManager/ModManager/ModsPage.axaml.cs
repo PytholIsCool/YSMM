@@ -135,7 +135,7 @@ public partial class ModsPage : ContentPage {
                                 mod.author ?? "Unknown"
                             ]),
                             new ListControlItem([])
-                                .ChainAddButton("View Github Page", () => WebUtils.OpenURL(mod.url))
+                                .ChainAddButton("View Link", () => WebUtils.OpenURL(mod.url))
                                 .ChainAddToggle("X", "✓", val => {
                                     if (val)
                                         Config.AddSelectedMod(mod);
