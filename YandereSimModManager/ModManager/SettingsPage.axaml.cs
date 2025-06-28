@@ -18,6 +18,7 @@ public partial class SettingsPage : ContentPage {
     public static SettingsPage? Instance;
 
     public SettingsPage() {
+        canOpen = false;
         Instance = this;
         InitializeComponent();
 
