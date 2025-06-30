@@ -6,9 +6,9 @@ namespace YSMM.ModManager;
 public partial class AboutPage : ContentPage {
     internal static AboutPage? Instance;
     public AboutPage() {
+        InitializeComponent();
         Instance = this;
         canOpen = false;
-        InitializeComponent();
     }
 
     private void OnGithubClicked(object? sender, RoutedEventArgs e) => WebUtils.OpenURL(@"https://github.com/PytholIsCool/YSMM");

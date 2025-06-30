@@ -19,6 +19,9 @@ public partial class HomePage : ContentPage {
         if (ModsPage.Instance != null)
             ModsPage.Instance.canOpen = true;
 
+        if (SettingsPage.Instance != null)
+            SettingsPage.Instance.canOpen = true;
+
         if (ReposPage.Instance != null)
             ReposPage.Instance.canOpen = true;
 

@@ -15,6 +15,7 @@ public partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
+        Icon = new WindowIcon("avares://YandereSimModManager/Assets/icon.png");
 
         Trace.Listeners.Add(new TextWriterTraceListener("log.txt"));
         Trace.AutoFlush = true;

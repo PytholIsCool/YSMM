@@ -31,9 +31,9 @@ public partial class ModsPage : ContentPage {
     private readonly ListControl MainListControl;
 
     public ModsPage() {
+        InitializeComponent();
         Instance = this;
         canOpen = false;
-        InitializeComponent();
 
         MainListControl = new ListControl {
             AllowNumberedList = false

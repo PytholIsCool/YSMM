@@ -18,10 +18,9 @@ public partial class SettingsPage : ContentPage {
     public static SettingsPage? Instance;
 
     public SettingsPage() {
+        InitializeComponent();
         canOpen = false;
         Instance = this;
-        InitializeComponent();
-
         GamePath.Text = Config.GetGamePath() ?? string.Empty;
 
         ExportsPath.Text = Config.GetExportsPath() ?? string.Empty;

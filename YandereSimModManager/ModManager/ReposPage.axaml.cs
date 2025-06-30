@@ -17,9 +17,9 @@ public partial class ReposPage : ContentPage {
     private readonly List<ListControlItem> AllRepoItems = [];
 
     public ReposPage() {
+        InitializeComponent();
         Instance = this;
         canOpen = false;
-        InitializeComponent();
 
         AllRepoItems.Add(AddDefaultRepo());
 
