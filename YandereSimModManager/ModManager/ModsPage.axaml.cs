@@ -26,7 +26,12 @@ public partial class ModsPage : ContentPage {
 
     private List<List<ListControlItem>> PagedBlocks = [];
     private int CurrentPageIndex = 0;
-    private const int PageSize = 6; // 6 mod blocks per page (mod + buttons)
+    private const int PageSize = 8; // mod blocks per page (mod + buttons)
+
+    private static readonly HttpClient SharedHttpClient = new();
+    private static readonly HttpClient SharedRedirectClient = new(new HttpClientHandler {
+        AllowAutoRedirect = false
+    });
 
     private readonly ListControl MainListControl;
 
@@ -72,82 +77,11 @@ public partial class ModsPage : ContentPage {
         await UpdateLoadingText("Loading...");
         await RefreshRepos();
 
-        using var client = new HttpClient();
         var blocks = new List<List<ListControlItem>>();
 
         foreach (var repo in Repos) {
-            string url = Path.GetFileName(repo.Value) == "repos.json"
-                ? repo.Value
-                : repo.Value.TrimEnd('/') + "/repos.json";
-
-            try {
-                await UpdateLoadingText($"Fetching repos.json from {repo.Key}...");
-                string json = await client.GetStringAsync(url);
-                var categories = JsonSerializer.Deserialize<Dictionary<string, List<ModSelection>>>(json);
-                await UpdateLoadingText($"Parsed repos.json for {repo.Key}");
-
-                blocks.Add([new ListControlItem(["Repository:", repo.Key])]);
-
-                if (categories == null)
-                    continue;
-
-                await UpdateLoadingText($"Parsing categories...");
-                foreach (var category in categories) {
-                    blocks.Add([new ListControlItem(["Category:", category.Key])]);
-
-                    foreach (var mod in category.Value) {
-                        if (string.IsNullOrWhiteSpace(mod.version) &&
-                            mod.url.Contains("github.com") && mod.url.Contains("/releases/latest")) {
-                            try {
-                                using var handler = new HttpClientHandler {
-                                    AllowAutoRedirect = false
-                                };
-                                using var redirectClient = new HttpClient(handler);
-                                var response = await redirectClient.GetAsync(mod.url);
-
-                                if (response.StatusCode == System.Net.HttpStatusCode.Found &&
-                                    response.Headers.Location != null) {
-                                    string redirectedUrl = response.Headers.Location.ToString();
-                                    var tag = Path.GetFileName(redirectedUrl);
-                                    mod.version = tag;
-                                }
-                            } catch (Exception ex) {
-                                Trace.WriteLine($"[Mod Version] Failed to fetch version from: {mod.url} - {ex.Message}");
-                            }
-                        }
-
-                        bool isSelected = Config.GetSelectedMods().Exists(m => m.name == mod.name && m.url == mod.url);
-
-                        var installState = Config.GetInstallState(mod.url);
-                        bool isInstalled = installState != null;
-                        bool needsUpdate = isInstalled && !string.IsNullOrWhiteSpace(installState?.installedVersion) && mod.version != installState.installedVersion;
-
-                        string versionDisplay = $"Version: {(string.IsNullOrWhiteSpace(mod.version) ? "?" : mod.version)}";
-                        string updateIndicator = needsUpdate ? " (Update Available)" : "";
-                        string shortDescription = Truncate(mod.description ?? string.Empty, 50);
-
-                        blocks.Add([
-                            new ListControlItem([
-                                mod.name,
-                                $"{versionDisplay}{updateIndicator}",
-                                mod.url,
-                                shortDescription,
-                                mod.author ?? "Unknown"
-                            ]),
-                            new ListControlItem([])
-                                .ChainAddButton("View Link", () => WebUtils.OpenURL(mod.url))
-                                .ChainAddToggle("X", "✓", val => {
-                                    if (val)
-                                        Config.AddSelectedMod(mod);
-                                    else
-                                        Config.RemoveSelectedMod(mod);
-                                }, defaultValue: isSelected)
-                        ]);
-                    }
-                }
-            } catch {
-                await UpdateLoadingText($"Failed to fetch mods from: {repo.Key}");
-            }
+            var repoBlocks = await ProcessRepository(repo.Key, repo.Value);
+            blocks.AddRange(repoBlocks);
         }
 
         await UpdateLoadingText("Finalizing mod list...");
@@ -157,6 +91,122 @@ public partial class ModsPage : ContentPage {
 
         LoadingIndicator.IsVisible = false;
         isFetching = false;
+    }
+
+    private async Task<List<List<ListControlItem>>> ProcessRepository(string name, string value) {
+        var repoBlocks = new List<List<ListControlItem>>();
+
+        string url = Path.GetFileName(value) == "repos.json" ? value : value.TrimEnd('/') + "/repos.json";
+
+        try {
+            await UpdateLoadingText($"Fetching repos.json from {name}...");
+            string json = await SharedHttpClient.GetStringAsync(url);
+
+            var categories = JsonSerializer.Deserialize<Dictionary<string, List<ModSelection>>>(json);
+            await UpdateLoadingText($"Parsed repos.json for {name}");
+
+            repoBlocks.Add([new ListControlItem(["Repository:", name])]);
+
+            if (categories == null)
+                return repoBlocks;
+
+            await UpdateLoadingText("Parsing categories...");
+            foreach (var category in categories) {
+                var categoryBlocks = await ProcessCategory(category.Key, category.Value);
+                repoBlocks.Add([new ListControlItem(["Category:", category.Key])]);
+                repoBlocks.AddRange(categoryBlocks);
+            }
+        } catch {
+            await UpdateLoadingText($"Failed to fetch mods from: {name}");
+        }
+
+        return repoBlocks;
+    }
+
+    private async Task<List<List<ListControlItem>>> ProcessCategory(string categoryName, List<ModSelection> mods) {
+        var modBlocks = new List<List<ListControlItem>>();
+
+        foreach (var mod in mods) {
+            await TryExtractVersionFromGithub(mod);
+
+            bool isSelected = Config.GetSelectedMods().Exists(m => m.name == mod.name && m.url == mod.url);
+            var installState = Config.GetInstallState(mod.url);
+            bool isInstalled = installState != null;
+            bool needsUpdate = isInstalled && !string.IsNullOrWhiteSpace(installState?.installedVersion) && mod.version != installState.installedVersion;
+
+            string versionDisplay = $"Version: {(string.IsNullOrWhiteSpace(mod.version) ? "?" : mod.version)}";
+            string updateIndicator = needsUpdate ? " (Update Available)" : "";
+            string shortDescription = Truncate(mod.description ?? string.Empty, 50);
+
+            modBlocks.Add([
+                new ListControlItem([
+                mod.name,
+                $"{versionDisplay}{updateIndicator}",
+                mod.url,
+                shortDescription,
+                mod.author ?? "Unknown"
+            ]),
+            new ListControlItem([])
+                .ChainAddButton("View Link", () => WebUtils.OpenURL(mod.url))
+                .ChainAddToggle("X", "✓", val => {
+                    if (val)
+                        Config.AddSelectedMod(mod);
+                    else
+                        Config.RemoveSelectedMod(mod);
+                }, defaultValue: isSelected)
+            ]);
+        }
+
+        return modBlocks;
+    }
+
+    private async Task TryExtractVersionFromGithub(ModSelection mod) {
+        if (!string.IsNullOrWhiteSpace(mod.version))
+            return;
+        if (!mod.url.Contains("github.com"))
+            return;
+
+        if (mod.url.Contains("/releases/latest")) {
+            try {
+                var response = await SharedRedirectClient.GetAsync(mod.url);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Found && response.Headers.Location != null) {
+                    string redirectedUrl = response.Headers.Location.ToString();
+                    var tag = Path.GetFileName(redirectedUrl);
+                    mod.version = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? tag[1..] : tag;
+                }
+            } catch (Exception ex) {
+                Trace.WriteLine($"[Mod Version] Failed to fetch version from: {mod.url} - {ex.Message}");
+            }
+        } else if (mod.url.Contains("/releases/tag/") || mod.url.Contains("/releases/download/")) {
+            try {
+                string version = "?";
+                string url = mod.url;
+
+                if (url.EndsWith("Install.zip", StringComparison.OrdinalIgnoreCase)) {
+                    int lastSlash = url.LastIndexOf('/');
+                    if (lastSlash > 0) {
+                        int versionEnd = lastSlash;
+                        int versionStart = url.LastIndexOf('/', versionEnd - 1) + 1;
+
+                        if (versionStart > 0 && versionEnd > versionStart) {
+                            string prevVer = url.Substring(versionStart, versionEnd - versionStart);
+                            version = prevVer.Substring(1, prevVer.Length - 1);
+                        }
+                    }
+                } else {
+                    var segments = new Uri(url).AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    if (segments.Length > 0) {
+                        string lastSegment = segments[^1];
+                        version = lastSegment.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? lastSegment[1..] : lastSegment;
+                    }
+                }
+
+                mod.version = version;
+            } catch (Exception ex) {
+                Trace.WriteLine($"[Mod Version] Failed to parse version from: {mod.url} - {ex.Message}");
+            }
+        }
     }
 
     string Truncate(string text, int maxLength) {
@@ -251,7 +301,19 @@ public partial class ModsPage : ContentPage {
                 Trace.WriteLine($"[ModInstall] Installing: {mod.name}");
                 await InstallMod(mod, installPath);
             } else {
-                Trace.WriteLine($"[ModInstall] Skipping up-to-date mod: {mod.name}");
+                var potentiallyInstalledMod = Config.GetInstallState(mod.url);
+                if (potentiallyInstalledMod != null) {
+                    foreach (string relativePath in potentiallyInstalledMod.installedFiles) {
+                        string fullPath = Path.Combine(installPath, relativePath);
+                        if (File.Exists(fullPath))
+                            continue;
+                        Trace.WriteLine($"[ModInstall] Selected mod with missing files detected! Installing: {mod.name}");
+                        await InstallMod(mod, installPath);
+                        return;
+                    }
+                }
+
+                    Trace.WriteLine($"[ModInstall] Skipping up-to-date mod: {mod.name}");
             }
         }
 
@@ -267,29 +329,43 @@ public partial class ModsPage : ContentPage {
         string tempZip = Path.GetTempFileName();
         string downloadUrl = mod.url;
 
-        if (downloadUrl.Contains("github.com") && downloadUrl.Contains("/releases/latest")) {
+        if (downloadUrl.Contains("github.com") && downloadUrl.Contains("/releases/")) {
             try {
-                using var handler = new HttpClientHandler { AllowAutoRedirect = false };
-                using var redirectClient = new HttpClient(handler);
-                var response = await redirectClient.GetAsync(downloadUrl);
+                if (downloadUrl.Trim().EndsWith("/Install.zip")) {
+                    Trace.WriteLine($"[ModInstall] GitHub URL is a direct URL to the mod install!");
+                    if (downloadUrl.Contains("/download/"))
+                        return;
+                    downloadUrl = downloadUrl.Replace("/releases/tag/", "/releases/download/");
+                } else if (downloadUrl.Contains("/releases/latest")) {
+                    Trace.WriteLine($"[ModInstall] GitHub URL is an indirect URL to the mod's latest release page!");
+                    var response = await SharedRedirectClient.GetAsync(downloadUrl);
 
-                if (response.StatusCode == System.Net.HttpStatusCode.Found && response.Headers.Location != null) {
-                    string tagUrl = response.Headers.Location.ToString();
-                    string baseUrl = tagUrl.Replace("/tag/", "/download/").TrimEnd('/');
-                    downloadUrl = baseUrl + "/Install.zip";
+                    if (response.StatusCode == System.Net.HttpStatusCode.Found && response.Headers.Location != null) {
+                        string tagUrl = response.Headers.Location.ToString();
+                        string tag = Path.GetFileName(tagUrl);
+                        downloadUrl = $"https://github.com/{GetGitHubUserAndRepo(downloadUrl)}/releases/download/{tag}/Install.zip";
+                    }
+                } else if (downloadUrl.Contains("/releases/tag/")) {
+                    Trace.WriteLine($"[ModInstall] GitHub URL is an direct URL to one of the mod's releases!");
+                    string tag = Path.GetFileName(downloadUrl);
+                    downloadUrl = downloadUrl.Replace("/releases/tag/", "/releases/download/").TrimEnd('/') + "/Install.zip";
+                } else if (!downloadUrl.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) {
+                    string tag = Path.GetFileName(downloadUrl);
+                    downloadUrl = downloadUrl.Replace("/releases/tag/", "/releases/download/").TrimEnd('/') + "/Install.zip";
+                } else {
+                    Trace.WriteLine($"[ModInstall] Mod \"{mod.name}\" did not match any of the expected formats.");
+                    return;
+                }
 
-                    Trace.WriteLine($"[ModInstall] Redirected download URL: {downloadUrl}");
-                } else
-                    Trace.WriteLine("[ModInstall] Could not resolve GitHub redirect.");
+                Trace.WriteLine($"[ModInstall] Resolved GitHub download URL: {downloadUrl}");
             } catch (Exception ex) {
-                Trace.WriteLine($"[ModInstall] Failed to resolve GitHub redirect for {mod.url}: {ex.Message}");
+                Trace.WriteLine($"[ModInstall] Failed to process GitHub URL: {mod.url} - {ex.Message}");
                 return;
             }
         }
 
         try {
-            using var http = new HttpClient();
-            byte[] data = await http.GetByteArrayAsync(downloadUrl);
+            byte[] data = await SharedHttpClient.GetByteArrayAsync(downloadUrl);
             await File.WriteAllBytesAsync(tempZip, data);
 
             var installedFiles = new List<string>();
@@ -310,7 +386,6 @@ public partial class ModsPage : ContentPage {
             Config.SetInstallState(mod.name, mod.url, mod.version ?? string.Empty, installedFiles);
         } catch (Exception ex) {
             Trace.WriteLine($"[ModInstall] Failed to install {mod.name}: {ex.Message}");
-            
         } finally {
             if (File.Exists(tempZip))
                 File.Delete(tempZip);
@@ -336,6 +411,18 @@ public partial class ModsPage : ContentPage {
         Config.RemoveInstallState(modUrl);
         await Task.Delay(100);
     }
+
+    private string GetGitHubUserAndRepo(string url) {
+        try {
+            var uri = new Uri(url);
+            var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length >= 2)
+                return $"{segments[0]}/{segments[1]}";
+        } catch { }
+
+        return "unknown/unknown";
+    }
+
 
     #endregion
 

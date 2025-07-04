@@ -11,6 +11,7 @@ using YSMM.Json;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Path = System.IO.Path;
+using System.Linq;
 
 namespace YSMM.ModManager;
 
@@ -42,6 +43,20 @@ public partial class SettingsPage : ContentPage {
     private void OnSetPath(object? sender, RoutedEventArgs e) => SetPath();
     private void OnClearPath(object? sender, RoutedEventArgs e) => GamePath.Text = string.Empty;
     private void OnOpenPath(object? sender, RoutedEventArgs e) => FilePicker.OpenPath(GamePath.Text);
+    private void OnLaunchGame(object? sender, RoutedEventArgs e) {
+        if (string.IsNullOrWhiteSpace(GamePath.Text))
+            return;
+
+        string exePath = GamePath.Text;
+        if (GamePath.Text.Trim().EndsWith('/'))
+            exePath = GamePath.Text.Substring(0, GamePath.Text.Length - 1);
+        if (File.Exists(exePath = string.Join(exePath, "/YandereSimulator.exe"))) {
+            Process.Start(new ProcessStartInfo {
+                FileName = exePath,
+                UseShellExecute = true
+            });
+        } 
+    }
 
     #endregion
 

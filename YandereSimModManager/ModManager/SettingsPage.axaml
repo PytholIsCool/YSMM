@@ -19,11 +19,12 @@
 					</Grid.RowDefinitions>
 
 					<TextBlock Classes="text" Text="Yandere Simulator Game Path:" TextAlignment="Left" Grid.Row="0"/>
-					<Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="14">
+					<Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="14">
 						<custom:LabelBox x:Name="GamePath" AllowNewLines="False" DisplayText="Game path goes here..." HorizontalAlignment="Stretch" Focusable="true" Grid.Column="0"/>
 						<Button Classes="button" Content="..." Click="OnSetPath" Grid.Column="1"/>
 						<Button Classes="button" Content="Clear" Click="OnClearPath" Grid.Column="2"/>
 						<Button Classes="button" Content="Open" Click="OnOpenPath" Grid.Column="3"/>
+						<Button Classes="button" Content="Launch" Click="OnLaunchGame" Grid.Column="4"/>
 					</Grid>
 				</Grid>
 

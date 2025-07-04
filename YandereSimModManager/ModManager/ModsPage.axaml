@@ -6,10 +6,10 @@
 	<Border Padding="30">
 		<ScrollViewer>
 			
-			<StackPanel Spacing="16">
+			<StackPanel Spacing="4">
 				<!-- Header -->
 				<TextBlock Classes="header" Text="Mods"/>
-				<StackPanel Orientation="Horizontal" Spacing="12">
+				<StackPanel Orientation="Horizontal" Spacing="24">
 					<TextBlock Classes="text" Text="Page:"/>
 					<TextBlock x:Name="PageNumberDisplay" Classes="text" Text="0"/>
 				</StackPanel>
