@@ -47,10 +47,8 @@ public partial class SettingsPage : ContentPage {
         if (string.IsNullOrWhiteSpace(GamePath.Text))
             return;
 
-        string exePath = GamePath.Text;
-        if (GamePath.Text.Trim().EndsWith('/'))
-            exePath = GamePath.Text.Substring(0, GamePath.Text.Length - 1);
-        if (File.Exists(exePath = string.Join(exePath, "/YandereSimulator.exe"))) {
+        string exePath = Path.Combine(GamePath.Text, "YandereSimulator.exe");
+        if (File.Exists(exePath)) {
             Process.Start(new ProcessStartInfo {
                 FileName = exePath,
                 UseShellExecute = true
