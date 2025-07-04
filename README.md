@@ -17,3 +17,6 @@ This software offers:
 - And more!
 
 Enjoy :)
+
+# Join The Discord!
+https://discord.gg/fhYcr8kzwx
