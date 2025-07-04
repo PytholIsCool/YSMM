@@ -333,9 +333,8 @@ public partial class ModsPage : ContentPage {
             try {
                 if (downloadUrl.Trim().EndsWith("/Install.zip")) {
                     Trace.WriteLine($"[ModInstall] GitHub URL is a direct URL to the mod install!");
-                    if (downloadUrl.Contains("/download/"))
-                        return;
-                    downloadUrl = downloadUrl.Replace("/releases/tag/", "/releases/download/");
+                    if (!downloadUrl.Contains("/download/"))
+                        downloadUrl = downloadUrl.Replace("/releases/tag/", "/releases/download/");
                 } else if (downloadUrl.Contains("/releases/latest")) {
                     Trace.WriteLine($"[ModInstall] GitHub URL is an indirect URL to the mod's latest release page!");
                     var response = await SharedRedirectClient.GetAsync(downloadUrl);
@@ -365,11 +364,15 @@ public partial class ModsPage : ContentPage {
         }
 
         try {
+            Trace.WriteLine($"[ModInstall] Downloading mod \"{mod.name}\" from: {downloadUrl}");
             byte[] data = await SharedHttpClient.GetByteArrayAsync(downloadUrl);
+            Trace.WriteLine($"[ModInstall] Retrieved byte data from mod \"{mod.name}\".");
             await File.WriteAllBytesAsync(tempZip, data);
+            Trace.WriteLine($"[ModInstall] Using byte data from mod \"{mod.name}\" to recreate Install.zip.");
 
             var installedFiles = new List<string>();
 
+            Trace.WriteLine($"[ModInstall] Extracting Install.zip from mod \"{mod.name}\".");
             using var zip = ZipFile.OpenRead(tempZip);
             foreach (var entry in zip.Entries) {
                 string fullPath = Path.Combine(installPath, entry.FullName);
@@ -383,6 +386,7 @@ public partial class ModsPage : ContentPage {
                 }
             }
 
+            Trace.WriteLine($"[ModInstall] Successfully installed mod \"{mod.name}\".");
             Config.SetInstallState(mod.name, mod.url, mod.version ?? string.Empty, installedFiles);
         } catch (Exception ex) {
             Trace.WriteLine($"[ModInstall] Failed to install {mod.name}: {ex.Message}");
