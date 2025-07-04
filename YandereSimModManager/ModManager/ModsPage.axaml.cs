@@ -173,7 +173,7 @@ public partial class ModsPage : ContentPage {
                 if (response.StatusCode == System.Net.HttpStatusCode.Found && response.Headers.Location != null) {
                     string redirectedUrl = response.Headers.Location.ToString();
                     var tag = Path.GetFileName(redirectedUrl);
-                    mod.version = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? tag[1..] : tag;
+                    mod.version = tag.ToLower().StartsWith("v", StringComparison.OrdinalIgnoreCase) ? tag[1..] : tag;
                 }
             } catch (Exception ex) {
                 Trace.WriteLine($"[Mod Version] Failed to fetch version from: {mod.url} - {ex.Message}");
@@ -287,7 +287,8 @@ public partial class ModsPage : ContentPage {
 
     private async void OnDownload(object? sender, RoutedEventArgs e) {
         string? installPath = Config.GetGamePath();
-        if (string.IsNullOrWhiteSpace(installPath)) return;
+        if (string.IsNullOrWhiteSpace(installPath))
+            return;
 
         var selectedMods = Config.GetSelectedMods();
         var installedMods = Config.GetInstalledModStates();
@@ -296,6 +297,15 @@ public partial class ModsPage : ContentPage {
             var installState = Config.GetInstallState(mod.url);
             string? currentVersion = installState?.installedVersion;
             string? newVersion = mod.version;
+
+            Trace.WriteLine($"[ModInstall] Mod \"{mod.name}\" is selected!");
+            if (installState != null && currentVersion != null) {
+                Trace.WriteLine($"[ModInstall] Selected mod \"{mod.name}\" is already installed!");
+                Trace.WriteLine($"[ModInstall] \"{mod.name}\" Currently installed version: {currentVersion}");
+
+                if (newVersion != null && newVersion != currentVersion)
+                    Trace.WriteLine($"[ModInstall] \"{mod.name}\" Has a new version available!");
+            }
 
             if (installState == null || currentVersion != newVersion) {
                 Trace.WriteLine($"[ModInstall] Installing: {mod.name}");
@@ -313,7 +323,7 @@ public partial class ModsPage : ContentPage {
                     }
                 }
 
-                    Trace.WriteLine($"[ModInstall] Skipping up-to-date mod: {mod.name}");
+                Trace.WriteLine($"[ModInstall] Skipping up-to-date mod: {mod.name}");
             }
         }
 
@@ -326,6 +336,14 @@ public partial class ModsPage : ContentPage {
     }
 
     private async Task InstallMod(ModSelection mod, string installPath) {
+        Trace.WriteLine($"[ModInstall] Starting installation for mod: {mod.name}");
+        Trace.WriteLine($"[ModInstall] Mod data: ");
+        Trace.WriteLine($"[ModInstall] Mod data: {mod.name}");
+        Trace.WriteLine($"[ModInstall] Mod data: {mod.url}");
+        Trace.WriteLine($"[ModInstall] Mod data: {mod.version ?? "No version specified"}");
+        Trace.WriteLine($"[ModInstall] Mod data: {mod.description ?? "No description"}");
+        Trace.WriteLine($"[ModInstall] Mod data: {mod.author ?? "Unknown author"}");
+
         string tempZip = Path.GetTempFileName();
         string downloadUrl = mod.url;
 
@@ -355,7 +373,7 @@ public partial class ModsPage : ContentPage {
                     Trace.WriteLine($"[ModInstall] Mod \"{mod.name}\" did not match any of the expected formats.");
                     return;
                 }
-
+                
                 Trace.WriteLine($"[ModInstall] Resolved GitHub download URL: {downloadUrl}");
             } catch (Exception ex) {
                 Trace.WriteLine($"[ModInstall] Failed to process GitHub URL: {mod.url} - {ex.Message}");
