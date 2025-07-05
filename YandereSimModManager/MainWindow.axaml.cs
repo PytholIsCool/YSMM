@@ -30,6 +30,7 @@ public partial class MainWindow : Window {
         homePage = new HomePage(); // The home page is created last so it can unlock the other pages and they aren't null
 
         ContentPanel.Instance?.OpenPage(homePage);
+        SettingsPage.Instance?.OnUpdateCheck(new(), new());
     }
 
     private void OnHomeClick(object? sender, RoutedEventArgs e) => ContentPanel.Instance?.OpenPage(homePage);

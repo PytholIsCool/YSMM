@@ -94,8 +94,11 @@
 					</Grid>
 				</Grid>
 			</Grid>
-			
-			<Button Classes="button" Grid.Row="1" Content="Edit Repositories" HorizontalAlignment="Right" Click="OnOpenRepos"/>
+
+			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="14">
+				<Button Classes="button" Content="Check For Updates" Click="OnUpdateCheck"/>
+				<Button Classes="button" Content="Edit Repositories" Click="OnOpenRepos"/>
+			</StackPanel>
 		</Grid>
 	</Border>
 </UserControl>

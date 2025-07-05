@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Path = System.IO.Path;
 using System.Linq;
+using System.Net.Http;
 
 namespace YSMM.ModManager;
 
@@ -204,6 +205,40 @@ public partial class SettingsPage : ContentPage {
     private void OnOpenInstallFolder(object? sender, RoutedEventArgs e) => FilePicker.OpenPath(AppContext.BaseDirectory);
 
     #endregion
+
+    public async void OnUpdateCheck(object? sender, RoutedEventArgs e) {
+        string? currentVersion = Config.YSMMVersion;
+
+        try {
+            using var client = new HttpClient(new HttpClientHandler {
+                AllowAutoRedirect = false
+            });
+
+            var response = await client.GetAsync(Config.githubLatestUrl);
+            if (response.StatusCode == System.Net.HttpStatusCode.Found && response.Headers.Location != null) {
+                string redirectUrl = response.Headers.Location.ToString();
+                string latestTag = Path.GetFileName(redirectUrl);
+                string latestVersion = latestTag.StartsWith("v", StringComparison.OrdinalIgnoreCase)
+                    ? latestTag[1..]
+                    : latestTag;
+
+                Trace.WriteLine($"[YSMM Update] Local version: {currentVersion}");
+                Trace.WriteLine($"[YSMM Update] Latest GitHub version: {latestVersion}");
+
+                if (!string.IsNullOrWhiteSpace(currentVersion) && !string.Equals(currentVersion, latestVersion)) {
+                    Trace.WriteLine("[YSMM Update] A new version is available!");
+                    PopupWindow.Show($"A new version of YSMM is available! Download?", () => {
+                        WebUtils.OpenURL(Config.githubLatestUrl);
+                    });
+                } else
+                    PopupWindow.Show("No updates found! You're up to date!");
+            } else
+                Trace.WriteLine($"[YSMM Update] Failed to resolve redirect: {response.StatusCode}");
+        } catch (Exception ex) {
+            Trace.WriteLine($"[YSMM Update] Error while checking for updates: {ex.Message}");
+        }
+    }
+
 
     private void OnOpenRepos(object? sender, RoutedEventArgs e) =>
         ContentPanel.Instance?.OpenPage(MainWindow.reposPage);

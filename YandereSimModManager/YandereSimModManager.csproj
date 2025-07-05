@@ -9,6 +9,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <RootNamespace>YSMM</RootNamespace>
     <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
+    <PublishAot>False</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>

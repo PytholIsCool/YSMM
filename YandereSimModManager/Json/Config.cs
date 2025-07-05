@@ -13,6 +13,9 @@ namespace YSMM.Json;
 
 internal static class Config {
 
+    public static readonly string YSMMVersion = "1.2.0";
+    public static readonly string githubLatestUrl = "https://github.com/PytholIsCool/YSMM/releases/latest";
+
     #region Properties 
 
     public static readonly string ConfigFolderPath = Path.Combine(FilePicker.GetLocalFolder(), "YSMM");
